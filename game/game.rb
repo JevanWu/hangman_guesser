@@ -41,13 +41,26 @@ class Game
   end
 
   def start_guess
-    ['E', 'A', 'O', 'I', 'U', 'Y', 'S', 'T'].each do |char|
-      @guesser.guess(char)
+    vowel_char_frequency = {} 
+    ['E', 'A', 'O', 'I', 'U', 'Y'].each do |char|
+      filtered_words.each do |word|
+        if word.include?(char)
+          vowel_char_frequency[char] = 0 if vowel_char_frequency[char].nil?
+          vowel_char_frequency[char] += 1
+        end
+      end
+    end
+
+    vowel_sorted_fequency = vowel_char_frequency.sort_by{ |_k, v| -v }.to_h
+    vowel_sorted_fequency.each do |k, _v|
+      @guesser.guess(k)
       break if @guesser.hit_a_char?
     end
 
-    #skip word if still all *
-    return if /\w/.match(@guesser.current_word).nil?
+    # #skip word if still all *
+    # return if /\w/.match(@guesser.current_word).nil?
+
+    reset_missing_position if @guesser.hit_a_char?
 
     loop do 
       # calculate the frequency of letters in missing position
@@ -60,6 +73,9 @@ class Game
         end
       end
 
+      #skip
+      break if @filtered_words.empty?
+      
       #set the frequency of guessed letters to zero
       @guesser.guessed_chars.each{ |char| char_frequency[char] = 0 }
 
@@ -70,18 +86,18 @@ class Game
 
       break if @guesser.finish_the_word?
 
+      reset_missing_position if @guesser.hit_a_char?
+      
       #remove the words containing the guessed letter if not right
       @filtered_words.delete_if{ |word| word.include?(sorted_fequency.first[0]) } if !@guesser.hit_a_char?
 
-      #skip
-      break if @filtered_words.empty?
     end
 
     puts "Finish word: #{@guesser.current_word}" if @guesser.finish_the_word?
 
     #reset variables
     @filtered_words = nil
-    @missing_position = nil
+    reset_missing_position
     @guesser.clear_guessed_chars
   end
 
@@ -123,7 +139,7 @@ class Game
     end
 
     def missing_position
-      return @missing_position unless @missing_position.nil?
+      return @missing_position unless @missing_position.nil? 
       @missing_position = []
       offset = 0
       loop do 
@@ -133,5 +149,9 @@ class Game
         @missing_position << position
       end
       @missing_position
+    end
+
+    def reset_missing_position
+      @missing_position = nil
     end
 end
