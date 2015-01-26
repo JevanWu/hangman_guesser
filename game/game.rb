@@ -103,6 +103,8 @@ class Game
                "action" => "submitResult"
              }.to_json
     res = send_request(params)
+    puts "Score: #{res["data"]["score"]}"
+    puts "Datetime: #{res["data"]["datetime"]}"
   end
 
   private
