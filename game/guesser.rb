@@ -20,7 +20,7 @@ class Guesser
     res = JSON.parse(RestClient.post(@request_url, params, :content_type => :json, :accept => :json))
     @guessed_chars << char
     @current_word = res["data"]["word"]
-    puts "Current word: #{res["data"]["word"]}"
+    puts "Current word: #{@current_word}"
   end
 
   def finish_the_word?

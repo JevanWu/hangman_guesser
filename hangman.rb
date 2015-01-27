@@ -5,7 +5,7 @@ player_id = "jevanwu@gmail.com"
 game = Game.new(player_id)
 game.start
 game.number_of_words.times do |_num|
-  game.get_new_word
+  game.new_word
   game.start_guess
   game.print_result
 end
