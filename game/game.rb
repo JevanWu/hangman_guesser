@@ -1,6 +1,5 @@
 require 'json'
 require 'rest-client'
-require 'pry'
 require_relative 'guesser'
 require_relative 'dictionary'
 
